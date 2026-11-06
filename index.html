@@ -3,420 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invitación a Nuestra Boda</title>
+    <title>Invitación de Boda Interactiva</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF8F5',
+                        burgundy: '#7A1C3C',
+                        'burgundy-hover': '#61132E',
+                        blush: '#F4ECEE',
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-color: #581845;
-            --accent-color: #900C3F;
-            --bg-color: #fcf8f7;
-            --card-bg: #ffffff;
-            --text-color: #2c2c2c;
-            --gray-light: #f0f0f0;
-        }
-
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #F2EFE9;
+            font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
-        }
-
-        .container {
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            width: 90%;
-            max-width: 600px;
-            padding: 40px;
-            box-sizing: border-box;
-            text-align: center;
-            position: relative;
-        }
-
-        h1 {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        .subtitle {
-            font-style: italic;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        .question-box {
-            display: none;
-        }
-
-        .question-box.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .options-grid {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .option-btn {
-            background-color: #fff;
-            border: 2px solid #e0e0e0;
-            padding: 14px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            color: var(--text-color);
-            text-align: left;
-        }
-
-        .option-btn:hover {
-            border-color: var(--accent-color);
-            background-color: #fff9fa;
-            transform: translateY(-2px);
-        }
-
-        /* Pantalla de inicio con botones dinámicos */
-        .initial-screen {
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 300px;
+            margin: 0;
+            padding: 1rem;
         }
-
-        .btn-container {
-            position: relative;
-            width: 240px;
-            height: 60px;
-            margin-top: 30px;
+        .step-card {
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
-        .btn-yes, .btn-no {
-            position: absolute;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.15s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: none;
+        .step-hidden {
+            display: none !important;
+            opacity: 0;
+            transform: translateY(10px);
         }
-
-        .btn-yes {
-            background-color: var(--accent-color);
-            color: white;
-            left: 10px;
-            top: 0;
-            z-index: 1;
-        }
-
-        .btn-no {
-            background-color: #e0e0e0;
-            color: #333;
-            /* Se solapa parcialmente al botón de Sí (dejando ver un trocito del Sí) */
-            left: 90px;
-            top: 0;
-            z-index: 2;
-        }
-
-        /* Pantalla intermedia si dicen que No */
-        .no-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .no-screen p {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .whatsapp-btn {
-            background-color: #25D366;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
-        }
-
-        .retry-btn {
-            background-color: #666;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .footer-note {
-            margin-top: 40px;
-            font-size: 0.75rem;
-            color: #aaa;
-            letter-spacing: 0.5px;
-        }
-
-        .result-screen {
-            display: none;
-        }
-
-        .link-canva-btn {
-            background-color: #25D366;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            transition: transform 0.2s;
-        }
-
-        .link-canva-btn:hover {
-            transform: scale(1.05);
+        .step-active {
+            display: block !important;
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<body>
+<body class="text-gray-800 antialiased select-none">
 
-    <div class="container" id="main-container">
+    <main class="w-full max-w-lg bg-cream rounded-3xl shadow-xl border border-stone-200/60 overflow-hidden relative p-6 sm:p-10 my-auto">
         
-        <!-- Pantalla de Bienvenida -->
-        <div id="screen-welcome" class="initial-screen">
-            <h1>¿Quieres venir a mi boda? 💍</h1>
-            <p class="subtitle">Una decisión importante requiere una pequeña prueba...</p>
-            <div class="btn-container">
-                <button class="btn-yes" onclick="startQuiz()">SÍ</button>
-                <button class="btn-no" id="btnNo" onmouseover="moveButton()" onclick="showNoScreen()">NO</button>
+        <!-- HEADER ICON DECORATION -->
+        <div class="flex justify-center mb-6">
+            <div class="w-14 h-14 rounded-full border border-stone-300 flex items-center justify-center bg-white shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-stone-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.684a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
             </div>
         </div>
 
-        <!-- Pantalla Intermedia si hace clic en NO -->
-        <div id="screen-no-choice" class="no-screen">
-            <h1>¡Qué lamentable! 🥺</h1>
-            <p>¿No puedes ir a la boda? Notifícanos de inmediato por Whatsapp.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
-                <button class="retry-btn" onclick="resetToWelcome()">Sí puedo y quiero</button>
-                <a href="https://wa.me/" target="_blank" class="whatsapp-btn">WhatsApp</a>
+        <!-- CONTAINER FOR ALL STEPS -->
+        <div id="quiz-container">
+
+            <!-- STEP 1: INITIAL QUESTION ("¿Quieres venir a mi boda?") -->
+            <div id="step-1" class="step-card step-active text-center">
+                <h1 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mb-8 leading-tight pt-2">
+                    ¿Quieres venir a mi boda? 💍
+                </h1>
+
+                <!-- EVASIVE CONTAINER FOR BUTTONS WITH PARTIAL OVERLAP -->
+                <div id="evasive-area" class="relative min-h-[170px] w-full flex items-center justify-center py-4 overflow-visible">
+                    <!-- SÍ BUTTON (PLACED UNDERNEATH WITH VISIBLE LOWER EDGE) -->
+                    <button id="yes-btn" onclick="startQuiz()" class="w-48 py-3.5 px-6 bg-burgundy hover:bg-burgundy-hover text-white font-semibold rounded-2xl shadow-md transition-transform duration-200 hover:scale-105 active:scale-95 z-10 absolute left-1/2 -translate-x-1/2 translate-y-4">
+                        SÍ
+                    </button>
+                    
+                    <!-- NO BUTTON (PARTIALLY OVERLAPPING ON TOP) -->
+                    <button id="no-btn" onclick="showNoNoticeScreen()" class="w-48 py-3.5 px-6 bg-stone-200 text-stone-700 font-medium rounded-2xl border border-stone-300 shadow-sm transition-all duration-150 z-20 absolute left-1/2 -translate-x-1/2 -translate-y-2 cursor-pointer">
+                        NO
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <!-- Contenedor del Cuestionario -->
-        <div id="quiz-container" style="display: none;">
-            <div id="question-box" class="question-box">
-                <!-- Se inyecta dinámicamente -->
+            <!-- STEP 1.5: PANTALLA SI CONSIGUE DARLE CLICK AL NO -->
+            <div id="step-no-notice" class="step-card step-hidden text-center py-4">
+                <div class="text-5xl mb-4">🥺</div>
+                <h2 class="text-2xl sm:text-3xl font-serif font-bold text-gray-900 mb-4 leading-snug">
+                    ¿No puedes ir a la boda? ¡Qué lamentable!
+                </h2>
+                <p class="text-stone-600 mb-8 font-medium">
+                    Notifícanos de inmediato por Whatsapp para coordinar.
+                </p>
+
+                <div class="space-y-3">
+                    <button onclick="resetInvitation()" class="w-full py-3.5 px-6 bg-burgundy hover:bg-burgundy-hover text-white font-semibold rounded-2xl shadow-md transition-transform duration-200 hover:scale-[1.02] active:scale-95 text-base">
+                        Sí puedo y quiero
+                    </button>
+
+                    <a href="https://wa.me/?text=Hola!%20Lamentablemente%20no%20podr%C3%A9%20asistir%20a%20la%20boda." target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md transition-transform duration-200 hover:scale-[1.02] active:scale-95 text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.099 4.019 4.142-1.085z"/>
+                        </svg>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
             </div>
+
+            <!-- STEP 2: DYNAMIC QUESTION SYSTEM -->
+            <div id="quiz-step-container" class="step-card step-hidden">
+                <!-- Progress bar -->
+                <div id="progress-container" class="w-full bg-stone-200 h-1.5 rounded-full mb-6 overflow-hidden">
+                    <div id="progress-bar" class="bg-burgundy h-full w-0 transition-all duration-300"></div>
+                </div>
+
+                <div class="text-center mb-6">
+                    <span id="question-tracker" class="text-xs uppercase tracking-wider text-stone-400 font-semibold block mb-1">Pregunta 1 de 9</span>
+                    <h2 id="question-title" class="text-2xl sm:text-3xl font-serif font-bold text-gray-900 leading-snug">
+                        <!-- Dynamic Question Text -->
+                    </h2>
+                </div>
+
+                <!-- OPTIONS LIST -->
+                <div id="options-container" class="space-y-3 mb-4">
+                    <!-- Dynamic Option Buttons -->
+                </div>
+            </div>
+
+            <!-- STEP 3: RESULT - APPROVED -->
+            <div id="step-approved" class="step-card step-hidden text-center py-4">
+                <div class="text-5xl mb-3">💌</div>
+                <h2 class="text-4xl sm:text-5xl font-serif font-bold text-emerald-800 mb-3 tracking-wide">
+                    ¡APROBASTE!
+                </h2>
+                <p class="text-lg font-medium text-gray-800 mb-2">
+                    ¡Tienes una invitación!
+                </p>
+                <p class="font-serif italic text-stone-600 mb-6 text-xl">
+                    Sabía que podía confiar en ti.
+                </p>
+
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold text-xs tracking-wider uppercase mb-6 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>ESTADO DE INVITACIÓN: CONFIRMADA</span>
+                </div>
+
+                <div class="block mb-6 space-y-3">
+                    <span class="font-serif text-lg text-stone-700 italic block">Nos vemos en la boda ❤️</span>
+                    
+                    <!-- BOTÓN CON LINK A LA INVITACIÓN COMPLETA -->
+                    <a href="https://walrus-2gnrvm.my.canva.site/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 w-full py-4 px-6 bg-burgundy hover:bg-burgundy-hover text-white font-semibold rounded-2xl shadow-lg transition-transform duration-200 hover:scale-[1.02] active:scale-95 text-base">
+                        <span>Aquí el link de la invitación</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+
+                    <button onclick="resetInvitation()" class="w-full py-3 px-6 rounded-xl border border-stone-300 text-stone-700 font-medium hover:bg-stone-100 transition-colors text-sm uppercase tracking-wider mt-2">
+                        INTENTAR DE NUEVO
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: RESULT - REJECTED -->
+            <div id="step-rejected" class="step-card step-hidden text-center py-4">
+                <div class="text-5xl mb-3">💔</div>
+                <h2 class="text-4xl sm:text-5xl font-serif font-bold text-rose-800 mb-3 tracking-wide">
+                    ¡REPROBASTE! 💔
+                </h2>
+                <p class="text-lg font-medium text-gray-800 mb-2">
+                    Lamentablemente tus respuestas demostraron que no estás listo para acompañarnos...
+                </p>
+                <p class="font-serif italic text-stone-600 mb-6 text-lg leading-relaxed">
+                    Tus respuestas han revelado sospechosos niveles de desinterés. ¡Inténtalo de nuevo!
+                </p>
+
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-50 border border-rose-200 text-rose-800 font-semibold text-xs tracking-wider uppercase mb-8 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <span>ESTADO DE INVITACIÓN: RECHAZADA</span>
+                </div>
+
+                <div class="block mb-6">
+                    <button onclick="resetInvitation()" class="w-full py-3 px-6 rounded-xl border border-stone-300 text-stone-700 font-medium hover:bg-stone-100 transition-colors text-sm uppercase tracking-wider">
+                        INTENTAR DE NUEVO
+                    </button>
+                </div>
+            </div>
+
+            <!-- FOOTER ATTRIBUTION -->
+            <footer class="mt-8 pt-4 border-t border-stone-200/70 text-center">
+                <p class="text-[10px] text-stone-400 tracking-widest uppercase font-semibold">
+                    CON AMOR Y EXPECTATIVAS SOSPECHOSAMENTE ALTAS
+                </p>
+            </footer>
+
         </div>
+    </main>
 
-        <!-- Pantalla de Resultados -->
-        <div id="screen-result" class="result-screen">
-            <h1 id="result-title"></h1>
-            <p class="subtitle" id="result-subtitle"></p>
-            <div id="result-actions"></div>
-        </div>
-
-        <div class="footer-note">CON AMOR Y EXPECTATIVAS SOSPECHOSAMENTE ALTAS</div>
-    </div>
-
+    <!-- SCRIPT LOGIC -->
     <script>
-        const questions = [
+        // QUESTION DATA & INCORRECT MARKS
+        const quizData = [
             {
-                title: "¿Qué tanto te emociona mi boda? 💌",
+                question: "¿Qué tanto te emociona mi boda? 💌",
                 options: [
-                    { text: "¡No me la pierdo por nada del mundo! 🎉", correct: true },
-                    { text: "¡Ya tengo listo el outfit! 🕺🏻", correct: true },
-                    { text: "Voy principalmente por la comida 🍰🍪🥂", correct: true },
-                    { text: "Voy por compromiso 🙃", correct: false },
-                    { text: "Se me olvidó que te ibas a casar 🫣", correct: false }
+                    { text: "¡No me la pierdo por nada del mundo!🎉", incorrect: false },
+                    { text: "¡Ya tengo listo el outfit!🕺🏻", incorrect: false },
+                    { text: "Voy principalmente por la comida 🍰🍪🥂", incorrect: false },
+                    { text: "Voy por compromiso🙃", incorrect: true },
+                    { text: "Se me olvidó que te ibas a casar🫣", incorrect: true }
                 ]
             },
             {
-                title: "¿Vas a llorar durante la ceremonia?",
+                question: "¿Vas a llorar durante la ceremonia?",
                 options: [
-                    { text: "Obviamente 💁🏻‍♀️", correct: true },
-                    { text: "Voy a llorar a mares 😭", correct: true },
-                    { text: "Intentaré contener las lágrimas 🥹", correct: true },
-                    { text: "Solo si los demás lloran", correct: true },
-                    { text: "No ❤️", correct: false }
+                    { text: "Obviamente 💁🏻‍♀️", incorrect: false },
+                    { text: "Voy a llorar a mares 😭", incorrect: false },
+                    { text: "Intentaré contener las lágrimas 🥹", incorrect: false },
+                    { text: "Solo si los demás lloran", incorrect: false },
+                    { text: "No ❤️", incorrect: true }
                 ]
             },
             {
-                title: "¿Qué vas a traer como regalo de boda?",
+                question: "¿Qué vas a traer como regalo de boda?",
                 options: [
-                    { text: "Dinero, obviamente 💵", correct: true },
-                    { text: "Algo de la lista de regalos 🎁", correct: true },
-                    { text: "Algo lindo que encontré 🫖", correct: true },
-                    { text: "Compraré algo a última hora de camino 💨", correct: true },
-                    { text: "Mi presencia es el regalo. 😜", correct: false }
+                    { text: "Dinero, obviamente 💵", incorrect: false },
+                    { text: "Algo de la lista de regalos🎁", incorrect: false },
+                    { text: "Algo lindo que encontré🫖", incorrect: false },
+                    { text: "Compraré algo a última hora de camino💨", incorrect: false },
+                    { text: "Mi presencia es el regalo. 😜", incorrect: true }
                 ]
             },
             {
-                title: "¿De qué color será el vestido que usarás en mi boda?",
+                question: "¿De qué color será el vestido que usarás en mi boda?",
                 options: [
-                    { text: "Blanco", correct: false },
-                    { text: "Negro", correct: true },
-                    { text: "Rojo", correct: true },
-                    { text: "Otro", correct: true },
-                    { text: "Del color que tú me digas 😌", correct: true },
-                    { text: "Soy hombre 😐", correct: true }
+                    { text: "Blanco", incorrect: true },
+                    { text: "Negro", incorrect: false },
+                    { text: "Rojo", incorrect: false },
+                    { text: "Otro", incorrect: false },
+                    { text: "Del color que tú me digas 😌", incorrect: false },
+                    { text: "Soy hombre 😐", incorrect: false }
                 ]
             },
             {
-                title: "Si por casualidad de la vida a la hora de servir tu quedas de último ¿Cómo reaccionarías?",
+                question: "Si por casualidad de la vida a la hora de servir tu quedas de último ¿Cómo reaccionarías?",
                 options: [
-                    { text: "Normal, son cosas que pasan", correct: true },
-                    { text: "Voy directo hacia la comida ¡No me puedo quedar sin nada!", correct: true },
-                    { text: "¡Seguramente a los novios o a alguien le caigo mal y lo orquestó en mi contra!", correct: false },
-                    { text: "Estoy más pendiente de otras cosas", correct: true }
+                    { text: "Normal, son cosas que pasan", incorrect: false },
+                    { text: "Voy directo hacia la comida ¡No me puedo quedar sin nada!", incorrect: false },
+                    { text: "¡Seguramente a los novios o a alguien le caigo mal y lo orquestó en mi contra!", incorrect: true },
+                    { text: "Estoy más pendiente de otras cosas", incorrect: false }
                 ]
             },
             {
-                title: "¿Planeas ayudar a los novios o ya los ayudaste durante la organización?",
+                question: "¿Planeas ayudar a los novios o ya los ayudaste durante la organización?",
                 options: [
-                    { text: "No, que se las arreglen solos", correct: false },
-                    { text: "Los ayudaré con el aseo", correct: true },
-                    { text: "Les llevaré un regalito y eso es suficiente", correct: true },
-                    { text: "Los ayudo con los pasapalos", correct: true },
-                    { text: "Les daré muy buenos consejos", correct: true }
+                    { text: "No, que se las arreglen solos", incorrect: true },
+                    { text: "Los ayudaré con el aseo", incorrect: false },
+                    { text: "Les llevaré un regalito y eso es suficiente", incorrect: false },
+                    { text: "Los ayudo con los pasapalos", incorrect: false },
+                    { text: "Les daré muy buenos consejos", incorrect: false }
                 ]
             },
             {
-                title: "Si los novios después de su boda, en su vida matrimonial tienen algunos problemas ¿tu qué les dirías?",
+                question: "Si los novios después de su boda, en su vida matrimonial tienen algunos problemas ¿tu qué les dirías?",
                 options: [
-                    { text: "¡Bótal@! ¡Los hombres/mujeres no sirven!", correct: false },
-                    { text: "¡Yo te dije que no te casaras!", correct: false },
-                    { text: "¡Aguanta! ¡Aguanta! ¡Aguanta!", correct: true },
-                    { text: "Perdónal@, (ella te hace la comida)/(el te paga las uñas)", correct: true },
-                    { text: "Ámal@ como Cristo lo amó", correct: true }
+                    { text: "¡Bótal@! ¡Los hombres/mujeres no sirven!", incorrect: true },
+                    { text: "¡Yo te dije que no te casaras!", incorrect: true },
+                    { text: "Aguanta! Aguanta! Aguanta!", incorrect: false },
+                    { text: "Perdónal@, (ella te hace la comida)/(el te paga las uñas)", incorrect: false },
+                    { text: "Ámal@ como Cristo lo amó", incorrect: false }
                 ]
             },
             {
-                title: "¿Cuál es el nombre de la novia?",
+                question: "¿Cuál es el nombre de la novia?",
                 options: [
-                    { text: "Sharon", correct: true },
-                    { text: "Charo", correct: false },
-                    { text: "Shallom", correct: true },
-                    { text: "Paulina", correct: false }
+                    { text: "Sharon", incorrect: false },
+                    { text: "Charo", incorrect: true },
+                    { text: "Shallom", incorrect: false },
+                    { text: "Paulina", incorrect: true }
                 ]
             },
             {
-                title: "¿Cuál es el nombre del novio?",
+                question: "¿Cuál es el nombre del novio?",
                 options: [
-                    { text: "Cristhian", correct: true },
-                    { text: "Cristh", correct: false },
-                    { text: "Kristhian", correct: true },
-                    { text: "Kristhopher", correct: false }
+                    { text: "Cristhian", incorrect: false },
+                    { text: "Cristh", incorrect: true },
+                    { text: "Kristhian", incorrect: false },
+                    { text: "Kristhopher", incorrect: true }
                 ]
             }
         ];
 
+        // STATE VARIABLES
         let currentQuestionIndex = 0;
         let incorrectAnswersCount = 0;
+        let noCount = 0;
 
-        function moveButton() {
-            const btnNo = document.getElementById('btnNo');
-            // Al pasar el mouse se mueve ligeramente cerca del sí para dificultarlo un poco más
-            const randomX = (Math.random() - 0.5) * 80;
-            const randomY = (Math.random() - 0.5) * 40;
-            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        const noBtn = document.getElementById('no-btn');
+        const evasiveArea = document.getElementById('evasive-area');
+        const progressBar = document.getElementById('progress-bar');
+
+        // EVASIVE "NO" BUTTON LOGIC
+        function dodgeNoButton() {
+            noCount++;
+            
+            const areaRect = evasiveArea.getBoundingClientRect();
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Constrain movement strictly within container dimensions
+            const maxX = Math.max(10, areaRect.width - btnWidth - 10);
+            const maxY = Math.max(10, areaRect.height - btnHeight - 10);
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.transform = 'none';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+
+            if (noCount === 3) {
+                noBtn.innerText = "¿Seguro/a?";
+            } else if (noCount === 5) {
+                noBtn.innerText = "¡No puedes!";
+            } else if (noCount === 8) {
+                noBtn.innerText = "¡Dale al SÍ!";
+            }
         }
 
-        function showNoScreen() {
-            document.getElementById('screen-welcome').style.display = 'none';
-            document.getElementById('screen-no-choice').style.display = 'flex';
+        noBtn.addEventListener('mouseenter', dodgeNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dodgeNoButton();
+        });
+
+        function showNoNoticeScreen() {
+            hideAllCards();
+            showCard('step-no-notice');
         }
 
-        function resetToWelcome() {
-            document.getElementById('screen-no-choice').style.display = 'none';
-            document.getElementById('screen-welcome').style.display = 'flex';
-            const btnNo = document.getElementById('btnNo');
-            btnNo.style.transform = 'translate(0px, 0px)';
-        }
-
+        // QUIZ NAVIGATION ENGINE
         function startQuiz() {
-            document.getElementById('screen-welcome').style.display = 'none';
-            document.getElementById('quiz-container').style.display = 'block';
             currentQuestionIndex = 0;
             incorrectAnswersCount = 0;
-            showQuestion();
+            hideAllCards();
+            renderQuestion();
+            showCard('quiz-step-container');
         }
 
-        function showQuestion() {
-            const q = questions[currentQuestionIndex];
-            const box = document.getElementById('question-box');
+        function renderQuestion() {
+            const data = quizData[currentQuestionIndex];
             
-            let html = `<h2>${q.title}</h2><div class="options-grid">`;
-            q.options.forEach((opt, index) => {
-                html += `<button class="option-btn" onclick="selectOption(${opt.correct})">${opt.text}</button>`;
+            // Progress percentage
+            const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Question text
+            document.getElementById('question-tracker').innerText = `Pregunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+            document.getElementById('question-title').innerText = data.question;
+
+            // Render options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-3.5 sm:p-4 rounded-2xl border border-stone-200 hover:border-burgundy hover:bg-blush/40 transition-all duration-200 flex items-center text-left group";
+                
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-full bg-stone-100 group-hover:bg-burgundy group-hover:text-white flex items-center justify-center font-semibold text-xs text-stone-600 mr-3 flex-shrink-0 transition-colors">
+                        ${letters[idx] || '•'}
+                    </span>
+                    <span class="text-stone-800 group-hover:text-burgundy font-medium text-sm sm:text-base leading-snug">
+                        ${opt.text}
+                    </span>
+                `;
+
+                btn.onclick = () => selectOption(opt);
+                optionsContainer.appendChild(btn);
             });
-            html += `</div>`;
-            
-            box.innerHTML = html;
-            box.classList.add('active');
         }
 
-        function selectOption(isCorrect) {
-            if (!isCorrect) {
+        function selectOption(option) {
+            // Count incorrect selections silently
+            if (option.incorrect) {
                 incorrectAnswersCount++;
             }
+            nextQuestion();
+        }
 
+        function nextQuestion() {
             currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                showQuestion();
+            
+            if (currentQuestionIndex < quizData.length) {
+                renderQuestion();
             } else {
-                showResult();
+                // Completed quiz - evaluate rule: >=2 failures = Rejected
+                hideAllCards();
+                
+                if (incorrectAnswersCount >= 2) {
+                    showCard('step-rejected');
+                } else {
+                    showCard('step-approved');
+                    launchConfetti();
+                }
             }
         }
 
-        function showResult() {
-            document.getElementById('quiz-container').style.display = 'none';
-            const resultScreen = document.getElementById('screen-result');
-            const title = document.getElementById('result-title');
-            const subtitle = document.getElementById('result-subtitle');
-            const actions = document.getElementById('result-actions');
+        function resetInvitation() {
+            noCount = 0;
+            noBtn.innerText = "NO";
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = '50%';
+            noBtn.style.top = 'auto';
+            noBtn.style.transform = 'translate(-50%, -8px)';
+            
+            hideAllCards();
+            showCard('step-1');
+        }
 
-            resultScreen.style.display = 'block';
+        function hideAllCards() {
+            const cards = document.querySelectorAll('.step-card');
+            cards.forEach(card => {
+                card.classList.remove('step-active');
+                card.classList.add('step-hidden');
+            });
+        }
 
-            // Si tiene 2 o más incorrectas, está rechazado/reprobado
-            if (incorrectAnswersCount >= 2) {
-                title.innerHTML = "¡REPROBASTE! 💔";
-                subtitle.innerHTML = "Lamentablemente no cumples con el porcentaje requerido de expectativas.";
-                actions.innerHTML = `<button class="retry-btn" onclick="startQuiz()" style="margin-top:20px; padding:12px 25px;">Intentar de nuevo</button>`;
-            } else {
-                title.innerHTML = "¡APROBASTE! 🎉";
-                subtitle.innerHTML = "¡Tienes una invitación! Sabía que podía confiar en ti.";
-                // AQUÍ ESTÁ TU LINK DE CANVA INTEGRADO
-                actions.innerHTML = `<a href="https://walrus-2gnrvm.my.canva.site/" target="_blank" class="link-canva-btn">Aquí el link de la invitación</a>`;
+        function showCard(id) {
+            const card = document.getElementById(id);
+            if (card) {
+                card.classList.remove('step-hidden');
+                card.classList.add('step-active');
+            }
+        }
+
+        function launchConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
             }
         }
     </script>
