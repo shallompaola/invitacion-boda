@@ -80,13 +80,13 @@
 
                 <!-- EVASIVE CONTAINER FOR BUTTONS WITH PARTIAL OVERLAP -->
                 <div id="evasive-area" class="relative min-h-[170px] w-full flex items-center justify-center py-4 overflow-visible">
-                    <!-- SÍ BUTTON (PLACED UNDERNEATH WITH VISIBLE LOWER EDGE) -->
-                    <button id="yes-btn" onclick="startQuiz()" class="w-48 py-3.5 px-6 bg-burgundy hover:bg-burgundy-hover text-white font-semibold rounded-2xl shadow-md transition-transform duration-200 hover:scale-105 active:scale-95 z-10 absolute left-1/2 -translate-x-1/2 translate-y-4">
+                    <!-- SÍ BUTTON (COLOCADO DEBAJO, PERO DESPLAZADO HACIA ABAJO PARA QUE SE VEA SU BORDE SUPERIOR) -->
+                    <button id="yes-btn" onclick="startQuiz()" class="w-48 py-3.5 px-6 bg-burgundy hover:bg-burgundy-hover text-white font-semibold rounded-2xl shadow-md transition-transform duration-200 hover:scale-105 active:scale-95 z-10 absolute left-1/2 -translate-x-1/2 translate-y-8">
                         SÍ
                     </button>
                     
-                    <!-- NO BUTTON (PARTIALLY OVERLAPPING ON TOP) -->
-                    <button id="no-btn" onclick="showNoNoticeScreen()" class="w-48 py-3.5 px-6 bg-stone-200 text-stone-700 font-medium rounded-2xl border border-stone-300 shadow-sm transition-all duration-150 z-20 absolute left-1/2 -translate-x-1/2 -translate-y-2 cursor-pointer">
+                    <!-- NO BUTTON (PARCIALMENTE ENCIMA, PERO DEJANDO VER EL SÍ CLARAMENTE ABAJO) -->
+                    <button id="no-btn" onclick="showNoNoticeScreen()" class="w-48 py-3.5 px-6 bg-stone-200 text-stone-700 font-medium rounded-2xl border border-stone-300 shadow-sm transition-all duration-150 z-20 absolute left-1/2 -translate-x-1/2 -translate-y-4 cursor-pointer">
                         NO
                     </button>
                 </div>
@@ -161,7 +161,7 @@
                     <a href="https://walrus-2gnrvm.my.canva.site/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 w-full py-4 px-6 bg-burgundy hover:bg-burgundy-hover text-white font-semibold rounded-2xl shadow-lg transition-transform duration-200 hover:scale-[1.02] active:scale-95 text-base">
                         <span>Aquí el link de la invitación</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                     </a>
 
@@ -407,10 +407,10 @@
             if (currentQuestionIndex < quizData.length) {
                 renderQuestion();
             } else {
-                // Completed quiz - evaluate rule: >=2 failures = Rejected
+                // Completed quiz - MODIFICADO AQUÍ: ahora se reprueba con >= 3 respuestas incorrectas
                 hideAllCards();
                 
-                if (incorrectAnswersCount >= 2) {
+                if (incorrectAnswersCount >= 3) {
                     showCard('step-rejected');
                 } else {
                     showCard('step-approved');
@@ -425,7 +425,7 @@
             noBtn.style.position = 'absolute';
             noBtn.style.left = '50%';
             noBtn.style.top = 'auto';
-            noBtn.style.transform = 'translate(-50%, -8px)';
+            noBtn.style.transform = 'translate(-50%, -16px)';
             
             hideAllCards();
             showCard('step-1');
